@@ -1,4 +1,4 @@
-package com.mobimeo.productsell.repository;
+package com.mobimeo.productsell.repository.product;
 
 
 import androidx.lifecycle.LiveData;

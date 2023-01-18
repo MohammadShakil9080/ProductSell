@@ -1,18 +1,13 @@
 package com.mobimeo.productsell.ui.product;
 
 
-import android.app.Application;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.mobimeo.productsell.data.model.response.product.ProductListResponse;
 import com.mobimeo.productsell.data.model.response.product.ProductListResponseItem;
-import com.mobimeo.productsell.repository.ProductListRepository;
+import com.mobimeo.productsell.repository.product.ProductListRepository;
 
 import java.util.List;
 

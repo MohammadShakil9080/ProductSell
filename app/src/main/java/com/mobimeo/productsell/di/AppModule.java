@@ -3,9 +3,14 @@ package com.mobimeo.productsell.di;
 
 
 import com.google.gson.GsonBuilder;
-import com.mobimeo.productsell.data.ApiInterface;
-import com.mobimeo.productsell.repository.ProductListRepository;
-import com.mobimeo.productsell.repository.ProductListResponseImp;
+import com.mobimeo.productsell.data.model.remote.ApiInterface;
+import com.mobimeo.productsell.data.model.response.cart.CardListResponse;
+import com.mobimeo.productsell.repository.cart.CartListRepositoryImp;
+import com.mobimeo.productsell.repository.cart.CartRepository;
+import com.mobimeo.productsell.repository.login.LoginRepository;
+import com.mobimeo.productsell.repository.login.LoginRepositoryImp;
+import com.mobimeo.productsell.repository.product.ProductListRepository;
+import com.mobimeo.productsell.repository.product.ProductListResponseImp;
 
 import dagger.Module;
 import dagger.Provides;
@@ -31,6 +36,19 @@ public  class AppModule {
     @NotNull
     public  ProductListRepository provideProductRepo(@NotNull ApiInterface api) {
         return new ProductListResponseImp(api);
+    }
+    @Singleton
+    @Provides
+    @NotNull
+    public LoginRepository provideLoginRepo(@NotNull ApiInterface api) {
+        return new LoginRepositoryImp(api);
+    }
+
+    @Singleton
+    @Provides
+    @NotNull
+    public CartRepository provideCartRepo(@NotNull ApiInterface api) {
+        return new CartListRepositoryImp(api);
     }
 
     @Singleton
