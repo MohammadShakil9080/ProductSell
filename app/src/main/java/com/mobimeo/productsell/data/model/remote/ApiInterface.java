@@ -22,7 +22,7 @@ public interface ApiInterface {
     @GET("products")
     Call<List<ProductListResponseItem>> getProductList();
     @GET("carts/user/{id}")
-    Call<CardListResponse> getCartList(@Path("id")String id);
+    Call<List<CardListResponse>> getCartList(@Path("id")String id);
 
     @POST("auth/login")
     Call<LoginResponse> getLogin(@Body LoginRequest loginRequest);
