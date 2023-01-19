@@ -37,7 +37,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class ProductListActivity extends AppCompatActivity implements CartAddDeleteInterface {
 
-
     private ProductListViewModel productListViewModel;
     private ProductListAdapter productListAdapter;
     AppCompatTextView tvCartCount;
@@ -130,7 +129,9 @@ public class ProductListActivity extends AppCompatActivity implements CartAddDel
         spinner = findViewById(R.id.productProgressBar);
         getCardList();
         if (productListViewModel.getFromLocalDatabase().size()!=0){
-            productListAdapter.updateProductList(productListViewModel.getFromLocalDatabase());
+            productListResponseItems.clear();
+            productListResponseItems.addAll(productListViewModel.getFromLocalDatabase());
+            productListAdapter.updateProductList(productListResponseItems);
         }else {
             getProductList();
         }
@@ -160,6 +161,7 @@ public class ProductListActivity extends AppCompatActivity implements CartAddDel
                 this.cardListResponses.clear();
                 this.cardListResponses.addAll(cardListResponse);
                 tvCartCount.setText(""+cardListResponse.get(0).getProducts().size());
+                getCardListData();
             }else{
 
             }

@@ -93,7 +93,6 @@ public class ProductListViewModel extends ViewModel {
     }
 
     public List<ProductListResponseItem> getFromLocalDatabase(){
-
         return productDataGetFromLocalRepository.getProductListFrom();
     }
     public void insertProductInLocalDatabase ( ProductListResponseItem productListResponseItem){
