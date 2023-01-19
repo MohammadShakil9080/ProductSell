@@ -14,6 +14,7 @@ import com.mobimeo.productsell.repository.cardAdd.CardAddRepository;
 import com.mobimeo.productsell.repository.cardDelete.CardDeleteRepository;
 import com.mobimeo.productsell.repository.cardUpdate.CardUpdateRepository;
 import com.mobimeo.productsell.repository.cartList.CartRepository;
+import com.mobimeo.productsell.repository.local_database.ProductDataGetFromLocalRepository;
 import com.mobimeo.productsell.repository.product.ProductListRepository;
 
 import java.util.ArrayList;
@@ -36,17 +37,21 @@ public class ProductListViewModel extends ViewModel {
     CardAddRepository cardAddRepository;
     CardUpdateRepository cardUpdateRepository;
     CardDeleteRepository cardDeleteRepository;
+    ProductDataGetFromLocalRepository productDataGetFromLocalRepository;
+
     @Inject
     public ProductListViewModel(ProductListRepository productListRepository,
                                 CartRepository cartRepository,CardAddRepository cardAddRepository,
                                 CardUpdateRepository cardUpdateRepository,
-                                CardDeleteRepository cardDeleteRepository) {
+                                CardDeleteRepository cardDeleteRepository,
+                                ProductDataGetFromLocalRepository productDataGetFromLocalRepository) {
         Log.e("productList", "ProductListViewModel: " );
         this.productListRepository = productListRepository;
         this.cartRepository = cartRepository;
         this.cardAddRepository = cardAddRepository;
         this.cardUpdateRepository = cardUpdateRepository;
         this.cardDeleteRepository = cardDeleteRepository;
+        this.productDataGetFromLocalRepository = productDataGetFromLocalRepository;
     }
     public MutableLiveData<List<ProductListResponseItem>> getProductListLiveData() {
         Log.e("productList", "getProductListLiveData: " );
@@ -85,6 +90,14 @@ public class ProductListViewModel extends ViewModel {
     public MutableLiveData<CardListResponse> getCardDelete (ProductListResponseItem productListResponseItem) {
         cardAddResponse = cardDeleteRepository.deleteCard(""+productListResponseItem.getId());
         return cardAddResponse;
+    }
+
+    public List<ProductListResponseItem> getFromLocalDatabase(){
+
+        return productDataGetFromLocalRepository.getProductListFrom();
+    }
+    public void insertProductInLocalDatabase ( ProductListResponseItem productListResponseItem){
+        productDataGetFromLocalRepository.productInsertData(productListResponseItem);
     }
 
 }

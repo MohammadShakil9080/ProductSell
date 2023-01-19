@@ -2,9 +2,15 @@ package com.mobimeo.productsell.di;
 
 
 
+import android.app.Application;
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
 import com.google.gson.GsonBuilder;
+import com.mobimeo.productsell.data.model.dataSource.ProductListDatabase;
 import com.mobimeo.productsell.data.model.remote.ApiInterface;
 import com.mobimeo.productsell.data.model.request.CardAddRequest;
 import com.mobimeo.productsell.data.model.response.cart.CardListResponse;
@@ -16,6 +22,8 @@ import com.mobimeo.productsell.repository.cardUpdate.CardUpdateRepository;
 import com.mobimeo.productsell.repository.cardUpdate.CardUpdateRepositoryImp;
 import com.mobimeo.productsell.repository.cartList.CartListRepositoryImp;
 import com.mobimeo.productsell.repository.cartList.CartRepository;
+import com.mobimeo.productsell.repository.local_database.ProductDataGetFromLocalRepository;
+import com.mobimeo.productsell.repository.local_database.ProductDataGetFromLocalRepositoryImp;
 import com.mobimeo.productsell.repository.login.LoginRepository;
 import com.mobimeo.productsell.repository.login.LoginRepositoryImp;
 import com.mobimeo.productsell.repository.product.ProductListRepository;
@@ -27,6 +35,8 @@ import dagger.hilt.InstallIn;
 import dagger.hilt.components.SingletonComponent;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
+
+import kotlin.jvm.internal.Intrinsics;
 import okhttp3.OkHttpClient;
 import okhttp3.OkHttpClient.Builder;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +48,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @InstallIn({SingletonComponent.class})
 public  class AppModule {
 
+    @Singleton
+    @Provides
+    @NotNull
+    public final ProductListDatabase provideProductDatabase(@NotNull Application app) {
+        return Room.databaseBuilder(app, ProductListDatabase.class, ProductListDatabase.DATABASE_NAME).allowMainThreadQueries().build();
+    }
+    @Singleton
+    @Provides
+    @NotNull
+    public final ProductDataGetFromLocalRepository provideProductLocalRepo(@NotNull ProductListDatabase productListDatabase) {
+        return new ProductDataGetFromLocalRepositoryImp(productListDatabase.userDao());
+    }
 
     @Singleton
     @Provides

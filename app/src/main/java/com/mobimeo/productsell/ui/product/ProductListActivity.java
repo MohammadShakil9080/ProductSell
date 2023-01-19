@@ -128,7 +128,13 @@ public class ProductListActivity extends AppCompatActivity implements CartAddDel
         productListAdapter = new ProductListAdapter(this);
         rvProductList.setAdapter(productListAdapter);
         spinner = findViewById(R.id.productProgressBar);
-        getProductList();
+        getCardList();
+        if (productListViewModel.getFromLocalDatabase().size()!=0){
+            productListAdapter.updateProductList(productListViewModel.getFromLocalDatabase());
+        }else {
+            getProductList();
+        }
+
 
     }
 
@@ -137,6 +143,9 @@ public class ProductListActivity extends AppCompatActivity implements CartAddDel
         productListViewModel.getProductListLiveData().observe(this, productResponse -> {
             spinner.setVisibility(View.GONE);
             if (productResponse != null) {
+                for (int i =0;i<productResponse.size();i++){
+                    productListViewModel.insertProductInLocalDatabase(productResponse.get(i));
+                }
                 this.productListResponseItems.clear();
                 this.productListResponseItems.addAll(productResponse);
                 productListAdapter.updateProductList(productResponse);
@@ -144,6 +153,8 @@ public class ProductListActivity extends AppCompatActivity implements CartAddDel
 
             }
         });
+    }
+    void getCardList(){
         productListViewModel.getCartListLiveData().observe(this, cardListResponse -> {
             if (cardListResponse != null) {
                 this.cardListResponses.clear();

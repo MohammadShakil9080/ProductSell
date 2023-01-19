@@ -2,13 +2,17 @@
 package com.mobimeo.productsell.data.model.response.product;
 
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-
+@Entity( tableName = "product_list")
 public class ProductListResponseItem {
 
+    @PrimaryKey(autoGenerate = false)
     @SerializedName("id")
     @Expose
     private Integer id;
