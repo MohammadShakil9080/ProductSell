@@ -1,4 +1,4 @@
-package com.mobimeo.productsell.repository.cart;
+package com.mobimeo.productsell.repository.cardUpdate;
 
 
 import android.util.Log;
@@ -6,10 +6,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.mobimeo.productsell.data.model.remote.ApiInterface;
+import com.mobimeo.productsell.data.model.request.CardAddRequest;
 import com.mobimeo.productsell.data.model.response.cart.CardListResponse;
-import com.mobimeo.productsell.data.model.response.login.LoginResponse;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,23 +15,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CartListRepositoryImp implements CartRepository{
+public class CardUpdateRepositoryImp implements CardUpdateRepository{
     ApiInterface myApi;
 
     @Inject
-    public CartListRepositoryImp(ApiInterface myApi) {
+    public CardUpdateRepositoryImp(ApiInterface myApi) {
         this.myApi = myApi;
     }
-
     @Override
-    public MutableLiveData<List<CardListResponse>> getCartList(String id) {
-        final MutableLiveData<List<CardListResponse>> data = new MutableLiveData<>();
-        myApi.getCartList(id)
-                .enqueue(new Callback<List<CardListResponse>>() {
+    public MutableLiveData<CardListResponse> updateCard(CardAddRequest cardAddRequest) {
+        final MutableLiveData<CardListResponse> data = new MutableLiveData<>();
+        myApi.updateCard(cardAddRequest)
+                .enqueue(new Callback<CardListResponse>() {
 
 
                     @Override
-                    public void onResponse(Call<List<CardListResponse>> call, Response<List<CardListResponse>> response) {
+                    public void onResponse(Call<CardListResponse> call, Response<CardListResponse> response) {
 
                         Log.e("productList", "onResponse: " );
                         if (response.body() != null) {
@@ -43,7 +40,7 @@ public class CartListRepositoryImp implements CartRepository{
                         }
                     }
                     @Override
-                    public void onFailure(Call<List<CardListResponse>> call, Throwable t) {
+                    public void onFailure(Call<CardListResponse> call, Throwable t) {
                         Log.e("productList", "onFailure: "+t.toString());
                         data.setValue(null);
                     }

@@ -13,6 +13,7 @@ public class Product {
     @Expose
     private Integer quantity;
 
+
     public Integer getProductId() {
         return productId;
     }

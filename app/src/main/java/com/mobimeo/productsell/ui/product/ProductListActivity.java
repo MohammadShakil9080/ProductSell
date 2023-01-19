@@ -2,6 +2,7 @@ package com.mobimeo.productsell.ui.product;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -10,10 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.mobimeo.productsell.R;
 import com.mobimeo.productsell.data.model.response.cart.CardListResponse;
@@ -21,6 +26,7 @@ import com.mobimeo.productsell.data.model.response.product.ProductListResponseIt
 import com.mobimeo.productsell.ui.cart.CartListActivity;
 import com.mobimeo.productsell.ui.splash.SplashActivity;
 import com.mobimeo.productsell.utils.CommondataClass;
+import com.mobimeo.productsell.utils.allInterface.CartAddDeleteInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +35,7 @@ import java.util.Objects;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class ProductListActivity extends AppCompatActivity {
+public class ProductListActivity extends AppCompatActivity implements CartAddDeleteInterface {
 
 
     private ProductListViewModel productListViewModel;
@@ -38,6 +44,7 @@ public class ProductListActivity extends AppCompatActivity {
     ImageView ivSearch,ivCart;
     RecyclerView rvProductList;
     ProgressBar spinner;
+    AppCompatEditText etSearch;
     List<CardListResponse> cardListResponses = new ArrayList<>();
     List<ProductListResponseItem> productListResponseItems = new ArrayList<>();
     List<ProductListResponseItem> newCardList = new ArrayList<>();
@@ -48,6 +55,7 @@ public class ProductListActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         initialization();
+        textWatcher();
 
         ivCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +63,36 @@ public class ProductListActivity extends AppCompatActivity {
                 getCardListData();
                 Intent intent = new Intent(ProductListActivity.this, CartListActivity.class);
                 startActivity(intent);
+            }
+        });
+    }
+
+    private void textWatcher() {
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.e("TextWa", "onTextChanged: "+s );
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                List<ProductListResponseItem> searchData = new ArrayList<>();
+                if (s.toString().isEmpty()){
+                    productListAdapter.updateProductList(productListResponseItems);
+                }else{
+                    for (int i=0;i<productListResponseItems.size();i++){
+                        if(productListResponseItems.get(i).getCategory().toLowerCase()
+                                .contains(s.toString().toLowerCase())){
+                            searchData.add(productListResponseItems.get(i));
+                        }
+                    }
+                    productListAdapter.updateProductList(searchData);
+                }
             }
         });
     }
@@ -79,6 +117,7 @@ public class ProductListActivity extends AppCompatActivity {
     }
 
     private void initialization() {
+        etSearch = findViewById(R.id.etSearch);
         ivSearch =  findViewById(R.id.ivSearch);
         rvProductList = findViewById(R.id.rvProductList);
         ivCart = findViewById(R.id.ivCart);
@@ -86,7 +125,7 @@ public class ProductListActivity extends AppCompatActivity {
         productListViewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
         GridLayoutManager layoutManager=new GridLayoutManager(this,2);
         rvProductList.setLayoutManager(layoutManager);
-        productListAdapter = new ProductListAdapter();
+        productListAdapter = new ProductListAdapter(this);
         rvProductList.setAdapter(productListAdapter);
         spinner = findViewById(R.id.productProgressBar);
         getProductList();
@@ -106,7 +145,6 @@ public class ProductListActivity extends AppCompatActivity {
             }
         });
         productListViewModel.getCartListLiveData().observe(this, cardListResponse -> {
-            spinner.setVisibility(View.GONE);
             if (cardListResponse != null) {
                 this.cardListResponses.clear();
                 this.cardListResponses.addAll(cardListResponse);
@@ -117,4 +155,30 @@ public class ProductListActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void cartAdd(ProductListResponseItem productListResponseItem) {
+        spinner.setVisibility(View.VISIBLE);
+        productListViewModel.getCartAdd(productListResponseItem).observe(this, cardListResponse -> {
+            spinner.setVisibility(View.GONE);
+            Toast.makeText(this,"Product Added in your cart", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    @Override
+    public void cartDelete(ProductListResponseItem productListResponseItem) {
+        spinner.setVisibility(View.VISIBLE);
+        productListViewModel.getCardDelete(productListResponseItem).observe(this, cardListResponse -> {
+            spinner.setVisibility(View.GONE);
+            Toast.makeText(this,"Product Delete from your cart", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    @Override
+    public void cartUpdate(ProductListResponseItem productListResponseItem) {
+        spinner.setVisibility(View.VISIBLE);
+        productListViewModel.getCartUpdate(productListResponseItem).observe(this, cardListResponse -> {
+            spinner.setVisibility(View.GONE);
+            Toast.makeText(this,"Product Update from your cart", Toast.LENGTH_SHORT).show();
+        });
+    }
 }

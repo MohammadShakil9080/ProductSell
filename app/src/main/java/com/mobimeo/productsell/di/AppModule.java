@@ -2,11 +2,20 @@ package com.mobimeo.productsell.di;
 
 
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.google.gson.GsonBuilder;
 import com.mobimeo.productsell.data.model.remote.ApiInterface;
+import com.mobimeo.productsell.data.model.request.CardAddRequest;
 import com.mobimeo.productsell.data.model.response.cart.CardListResponse;
-import com.mobimeo.productsell.repository.cart.CartListRepositoryImp;
-import com.mobimeo.productsell.repository.cart.CartRepository;
+import com.mobimeo.productsell.repository.cardAdd.CardAddRepository;
+import com.mobimeo.productsell.repository.cardAdd.CardAddRepositoryImp;
+import com.mobimeo.productsell.repository.cardDelete.CardDeleteRepository;
+import com.mobimeo.productsell.repository.cardDelete.CardDeleteRepositoryImp;
+import com.mobimeo.productsell.repository.cardUpdate.CardUpdateRepository;
+import com.mobimeo.productsell.repository.cardUpdate.CardUpdateRepositoryImp;
+import com.mobimeo.productsell.repository.cartList.CartListRepositoryImp;
+import com.mobimeo.productsell.repository.cartList.CartRepository;
 import com.mobimeo.productsell.repository.login.LoginRepository;
 import com.mobimeo.productsell.repository.login.LoginRepositoryImp;
 import com.mobimeo.productsell.repository.product.ProductListRepository;
@@ -30,6 +39,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public  class AppModule {
 
 
+    @Singleton
+    @Provides
+    @NotNull
+    public CardUpdateRepository provideCardUpdateRepo(@NotNull ApiInterface api) {
+        return new CardUpdateRepositoryImp(api);
+    }
+    @Singleton
+    @Provides
+    @NotNull
+    public CardAddRepository provideCardAddRepo(@NotNull ApiInterface api) {
+        return new CardAddRepositoryImp(api);
+    }
+    @Singleton
+    @Provides
+    @NotNull
+    public CardDeleteRepository provideCardDeleteRepo(@NotNull ApiInterface api) {
+        return new CardDeleteRepositoryImp(api);
+    }
 
     @Singleton
     @Provides

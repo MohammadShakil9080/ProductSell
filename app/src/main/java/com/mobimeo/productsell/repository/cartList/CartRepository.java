@@ -1,11 +1,9 @@
-package com.mobimeo.productsell.repository.cart;
+package com.mobimeo.productsell.repository.cartList;
 
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.mobimeo.productsell.data.model.request.LoginRequest;
 import com.mobimeo.productsell.data.model.response.cart.CardListResponse;
-import com.mobimeo.productsell.data.model.response.login.LoginResponse;
 
 import java.util.List;
 

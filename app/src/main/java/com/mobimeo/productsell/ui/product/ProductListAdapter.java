@@ -1,6 +1,7 @@
 package com.mobimeo.productsell.ui.product;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mobimeo.productsell.R;
 import com.mobimeo.productsell.data.model.response.product.ProductListResponseItem;
+import com.mobimeo.productsell.utils.allInterface.CartAddDeleteInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,12 @@ import java.util.List;
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ProductListHolder>{
     Context context;
     List<ProductListResponseItem> productListResponse = new ArrayList<>();
+    CartAddDeleteInterface cartAddDeleteInterface;
+
+    public ProductListAdapter(CartAddDeleteInterface cartAddDeleteInterface) {
+        this.cartAddDeleteInterface = cartAddDeleteInterface;
+    }
+
     @NonNull
     @Override
     public ProductListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -47,14 +55,25 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 count++;
                 holder.tvProductCount.setText(""+count);
                 productListResponse.get(pos).setCount(count);
+                if (count==1){
+                    cartAddDeleteInterface.cartAdd(productItem);
+                }else {
+                    cartAddDeleteInterface.cartUpdate(productItem);
+                }
             }
         });
         holder.tvMinus.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SuspiciousIndentation")
             @Override
             public void onClick(View v) {
                 int count = Integer.parseInt( holder.tvProductCount.getText().toString());
                 if (0<count)
                 count--;
+                if (count==0){
+                    cartAddDeleteInterface.cartDelete(productItem);
+                }else {
+                    cartAddDeleteInterface.cartUpdate(productItem);
+                }
                 holder.tvProductCount.setText(""+count);
             }
         });
